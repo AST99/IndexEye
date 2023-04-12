@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">IndexEye</string>
+    <string name="title_activity_connexion_screen">ConnexionScreen</string>
+    <string name="title_activity_welcome_screen">WelcomeScreen</string>
+    <string name="WelcomeMsg">IndexEye vous permet de suivre votre consommation d’eau en temps réel et vous signale automatiquement en cas de consommation anormale.</string>
+    <string name="indexeye">IndexEye</string>
+    <string name="bienvenue">Bienvenue</string>
+    <string name="se_connecter">Se connecter</string>
+    <string name="vous_n_avez_pas_de_compte">Vous n\'avez pas de compte ?</string>
+    <string name="inscrivez_vous">Inscrivez-vous</string>
+    <string name="mot_de_passe">Mot de passe</string>
+    <string name="e_mail">E-mail</string>
+    <string name="connexion">Connexion</string>
+    <string name="associer_l_appareil_l_aide_d_un_code_qr">Associer l\'appareil à l\'aide d\'un code QR</string>
+    <string name="confirmer_le_mot_de_passe">Confirmer le mot de passe</string>
+</resources>
