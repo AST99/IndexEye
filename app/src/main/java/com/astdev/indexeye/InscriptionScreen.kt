@@ -63,6 +63,15 @@ class InscriptionScreen : AppCompatActivity() {
 
         }
 
+        binding.btnPrecedAndSignIn.setOnClickListener {
+            if(binding.Etape2.isVisible){
+                binding.Etape2.visibility = View.GONE
+                binding.progressStep1.progress = 0
+                binding.Etape1.visibility = View.VISIBLE
+                binding.btnPrecedAndSignIn.visibility = View.GONE
+            }
+        }
+
     }
 
     private fun step1Done(){
@@ -127,13 +136,26 @@ class InscriptionScreen : AppCompatActivity() {
             camera = CodeScanner.CAMERA_BACK
             formats = CodeScanner.ALL_FORMATS
             autoFocusMode = AutoFocusMode.SAFE
-            scanMode = ScanMode.CONTINUOUS
+            scanMode = ScanMode.SINGLE
             isAutoFocusEnabled = true
             isFlashEnabled = false
 
             decodeCallback = DecodeCallback {
                 runOnUiThread{
                     Toast.makeText(this@InscriptionScreen, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
+                    binding.imgViewSucces.visibility = View.VISIBLE
+                    binding.txtViewAccessAccount.visibility = View.GONE
+                    binding.txtViewSucces.visibility = View.VISIBLE
+                    binding.txtQr1.visibility = View.GONE
+                    binding.txtQr2.visibility = View.GONE
+                    binding.scannerView.visibility = View.GONE
+                    binding.linearLayoutSteps.visibility = View.VISIBLE
+                    binding.btnPrecedAndSignIn.visibility = View.GONE
+                    binding.progressStep3.progress = 100
+                    binding.btnNextAndSignIn.visibility = View.VISIBLE
+                    binding.btnNextAndSignIn.text = "Connexion"
+                    binding.btnNextAndSignIn.setOnClickListener {
+                        startActivity(Intent(this@InscriptionScreen, ConnexionScreen::class.java)) }
                 }
             }
 
@@ -144,9 +166,11 @@ class InscriptionScreen : AppCompatActivity() {
                 }
             }
 
-            binding.scannerView.setOnClickListener {
+            codeScanner.startPreview()
+
+            /*binding.scannerView.setOnClickListener {
                 codeScanner.startPreview()
-            }
+            }*/
         }
     }
 
@@ -224,6 +248,16 @@ class InscriptionScreen : AppCompatActivity() {
         binding.ConfirmPassWrdInscription.setOnFocusChangeListener { view, b ->
             if (!b) binding.ConfirmPassWrdIncrptionContainer.error = valideConfirmPassWrd()
         }
+    }
+
+    /*override fun onResume() {
+        super.onResume()
+        codeScanner.startPreview()
+    }*/
+
+    override fun onPause() {
+        codeScanner.releaseResources()
+        super.onPause()
     }
 
 }
