@@ -1,6 +1,5 @@
 package com.astdev.indexeye
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -20,6 +19,7 @@ class ConnexionScreen : AppCompatActivity() {
         binding = ConnexionScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         binding.AccessAccount.setOnClickListener {
             mailAndPassWrdConnexion()
             startActivity(Intent(this, HomeScreen::class.java))
@@ -27,6 +27,11 @@ class ConnexionScreen : AppCompatActivity() {
 
         binding.CreateAccount.setOnClickListener {
             startActivity(Intent(this, InscriptionScreen::class.java)) }
+
+        val inscriptionMail: String? =intent.getStringExtra("e-mail")
+        val inscriptionPassWrd: String?= intent.getStringExtra("pass")
+        binding.Mail.setText(inscriptionMail)
+        binding.passWrd.setText(inscriptionPassWrd)
 
         mailAndPassWrdFocusListener()
     }
@@ -41,7 +46,7 @@ class ConnexionScreen : AppCompatActivity() {
         if ( /*valideMail()!=null || */TextUtils.isEmpty(binding.Mail.text))
             binding.mailContainer.error = "Votre e-mail est requis!";
         else if ( /*validePassWrd()!=null*/TextUtils.isEmpty(binding.passWrd.text))
-            binding.passWrdContainer.setError("Votre mot de passe est requis!");
+            binding.passWrdContainer.error = "Votre mot de passe est requis!";
         else if (binding.passWrd.text!!.length < 5)
             binding.passWrdContainer.error = "Votre mot de passe doit contenir au moins 5 caractères";
         else {
@@ -87,10 +92,10 @@ class ConnexionScreen : AppCompatActivity() {
     }
 
     private fun mailAndPassWrdFocusListener() {
-        binding.Mail.setOnFocusChangeListener { view, b ->
+        binding.Mail.setOnFocusChangeListener { _, b ->
             if (!b) binding.mailContainer.error = valideMail()
         }
-        binding.passWrd.setOnFocusChangeListener { view, b ->
+        binding.passWrd.setOnFocusChangeListener { _, b ->
             if (!b) binding.passWrdContainer.error = validePassWrd()
         }
     }

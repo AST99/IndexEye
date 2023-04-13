@@ -1,5 +1,6 @@
 package com.astdev.indexeye
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -26,6 +27,8 @@ class InscriptionScreen : AppCompatActivity() {
     private lateinit var names:String
     private lateinit var mail:String
     private lateinit var passWrd:String
+
+    private val usersModels = UsersModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +106,7 @@ class InscriptionScreen : AppCompatActivity() {
         passWrd = Objects.requireNonNull(binding.passWrdInscription.text).toString().trim { it <= ' ' }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun qrCodeScanner(){
         codeScanner = CodeScanner(this, binding.scannerView)
 
@@ -154,8 +158,22 @@ class InscriptionScreen : AppCompatActivity() {
                     binding.progressStep3.progress = 100
                     binding.btnNextAndSignIn.visibility = View.VISIBLE
                     binding.btnNextAndSignIn.text = "Connexion"
+
                     binding.btnNextAndSignIn.setOnClickListener {
-                        startActivity(Intent(this@InscriptionScreen, ConnexionScreen::class.java)) }
+
+                        /*val usr = UsersModels()
+                        usr.mail = mail
+                        usr.passWrd = passWrd*/
+
+                        val intent=Intent(this@InscriptionScreen, ConnexionScreen::class.java)
+                        intent.putExtra("e-mail", mail)
+                        intent.putExtra("pass", passWrd)
+                        startActivity(intent)
+
+                        //Toast.makeText(this@InscriptionScreen, ""+usr.mail, Toast.LENGTH_LONG).show()
+
+                        //startActivity(Intent(this@InscriptionScreen, ConnexionScreen::class.java))
+                    }
                 }
             }
 
@@ -202,13 +220,14 @@ class InscriptionScreen : AppCompatActivity() {
     private fun valideMail(): String? {
         if (TextUtils.isEmpty(binding.MailInscription.text))
             return "Votre e-mail est requis!"
-        else if (!Patterns.EMAIL_ADDRESS.matcher(Objects.requireNonNull(binding.MailInscription.text).toString().trim { it <= ' ' }).matches())
+        else if (!Patterns.EMAIL_ADDRESS.matcher(Objects.requireNonNull
+                (binding.MailInscription.text).toString().trim { it <= ' ' }).matches())
             return "Veillez fournir un e-mail valide!"
         return null
     }
 
     private fun mailFocusListener() {
-        binding.MailInscription.setOnFocusChangeListener { view, b ->
+        binding.MailInscription.setOnFocusChangeListener { _, b ->
             if (!b) binding.InscriptionMailContainer.error = valideMail()
         }
     }
@@ -220,7 +239,7 @@ class InscriptionScreen : AppCompatActivity() {
     }
 
     private fun nameFocusListener() {
-        binding.InscriptionNomPrenom.setOnFocusChangeListener { view, b ->
+        binding.InscriptionNomPrenom.setOnFocusChangeListener { _, b ->
             if (!b) binding.NameInscriptionContainer.error = valideNomPrenom()
         }
     }
@@ -235,17 +254,17 @@ class InscriptionScreen : AppCompatActivity() {
     }
 
     private fun passWrdFocusListener() {
-        binding.passWrdInscription.setOnFocusChangeListener { view, b ->
+        binding.passWrdInscription.setOnFocusChangeListener { _, b ->
             if (!b) binding.passWrdIncrptionContainer.error = validePassWrd()
         }
     }
 
     private fun valideConfirmPassWrd(): String? {
-        return if (TextUtils.isEmpty(binding.ConfirmPassWrdInscription.getText())) "Confirmez votre mot de passe" else null
+        return if (TextUtils.isEmpty(binding.ConfirmPassWrdInscription.text)) "Confirmez votre mot de passe" else null
     }
 
     private fun confirmPassWrdFocusListener() {
-        binding.ConfirmPassWrdInscription.setOnFocusChangeListener { view, b ->
+        binding.ConfirmPassWrdInscription.setOnFocusChangeListener { _, b ->
             if (!b) binding.ConfirmPassWrdIncrptionContainer.error = valideConfirmPassWrd()
         }
     }
