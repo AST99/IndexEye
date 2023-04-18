@@ -9,6 +9,8 @@
 
     <!--IndexEye Colors-->
     <color name="mainColor">#FF041D28</color>
+    <color name="secondColor">#FF1497CF</color>
     <color name="white">#FFFFFFFF</color>
+
 
 </resources>

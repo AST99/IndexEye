@@ -14,6 +14,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.astdev.indexeye.databinding.InscriptionScreenBinding
 import com.budiyev.android.codescanner.*
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import java.util.*
 
 
@@ -27,14 +32,19 @@ class InscriptionScreen : AppCompatActivity() {
     private lateinit var names:String
     private lateinit var mail:String
     private lateinit var passWrd:String
+    private lateinit var qrScannResult:String
 
-    private val usersModels = UsersModels()
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = InscriptionScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth = Firebase.auth
+
 
         setupPermission()
 
@@ -61,7 +71,9 @@ class InscriptionScreen : AppCompatActivity() {
                 } else if (TextUtils.isEmpty(binding.ConfirmPassWrdInscription.text)) {
                     binding.ConfirmPassWrdIncrptionContainer.error = "Confirmez votre mot de passe!"
                 }
-                else step2Done()
+                else {
+                    step2Done()
+                }
             }
 
         }
@@ -80,7 +92,7 @@ class InscriptionScreen : AppCompatActivity() {
     private fun step1Done(){
         if (TextUtils.isEmpty(binding.InscriptionNomPrenom.text)) {
             binding.NameInscriptionContainer.error = "Le nom et le prénom sont requis!"
-        } else if (TextUtils.isEmpty(binding.MailInscription.getText())) {
+        } else if (TextUtils.isEmpty(binding.MailInscription.text)) {
             binding.InscriptionMailContainer.error = "Votre e-mail est requis!"
         }
         else{
@@ -106,35 +118,42 @@ class InscriptionScreen : AppCompatActivity() {
         passWrd = Objects.requireNonNull(binding.passWrdInscription.text).toString().trim { it <= ' ' }
     }
 
+    /******************************Inscription simple utilisateur */
+    //=>m: mail, p: mot de passe, n: nom/prénom
+    private fun createSimpleUserWithMail(m: String, p: String, n: String) {
+        try {
+
+            auth.createUserWithEmailAndPassword(m, p).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = UsersModels(m, n, p)
+                    FirebaseDatabase.getInstance().getReference("Users")
+                        //.child(Objects.requireNonNull(FirebaseAuth.getInstance().currentUser)!!.uid)
+                        .child(qrScannResult).child("User info")
+                        .setValue(user).addOnCompleteListener { task1: Task<Void?> ->
+                            if (task1.isSuccessful) {
+                                auth.currentUser
+                            } else {
+                                Toast.makeText(
+                                    this@InscriptionScreen, """Votre inscription n'a pas été fait !
+ Essayez à nouveau""", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                } else {
+                    Toast.makeText(
+                        this@InscriptionScreen, """Votre inscription n'a pas été fait !
+ Essayez à nouveau""", Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
     @SuppressLint("SetTextI18n")
     private fun qrCodeScanner(){
         codeScanner = CodeScanner(this, binding.scannerView)
-
-        // Parameters (default values)
-        codeScanner.camera = CodeScanner.CAMERA_BACK // or CAMERA_FRONT or specific camera id
-        codeScanner.formats = CodeScanner.ALL_FORMATS // list of type BarcodeFormat,
-        // ex. listOf(BarcodeFormat.QR_CODE)
-        codeScanner.autoFocusMode = AutoFocusMode.SAFE // or CONTINUOUS
-        codeScanner.scanMode = ScanMode.SINGLE // or CONTINUOUS or PREVIEW
-        codeScanner.isAutoFocusEnabled = true // Whether to enable auto focus or not
-        codeScanner.isFlashEnabled = false // Whether to enable flash or not
-
-        // Callbacks
-        codeScanner.decodeCallback = DecodeCallback {
-            runOnUiThread {
-                Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
-            }
-        }
-        codeScanner.errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
-            runOnUiThread {
-                Toast.makeText(this, "Camera initialization error: ${it.message}",
-                    Toast.LENGTH_LONG).show()
-            }
-        }
-
-        binding.scannerView.setOnClickListener {
-            codeScanner.startPreview()
-        }
 
         codeScanner.apply {
             camera = CodeScanner.CAMERA_BACK
@@ -145,8 +164,11 @@ class InscriptionScreen : AppCompatActivity() {
             isFlashEnabled = false
 
             decodeCallback = DecodeCallback {
-                runOnUiThread{
-                    Toast.makeText(this@InscriptionScreen, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
+                runOnUiThread {
+                    qrScannResult = it.text
+
+                    //Toast.makeText(this@InscriptionScreen, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
+
                     binding.imgViewSucces.visibility = View.VISIBLE
                     binding.txtViewAccessAccount.visibility = View.GONE
                     binding.txtViewSucces.visibility = View.VISIBLE
@@ -159,37 +181,30 @@ class InscriptionScreen : AppCompatActivity() {
                     binding.btnNextAndSignIn.visibility = View.VISIBLE
                     binding.btnNextAndSignIn.text = "Connexion"
 
+                    createSimpleUserWithMail(mail, passWrd, names)
+
                     binding.btnNextAndSignIn.setOnClickListener {
 
-                        /*val usr = UsersModels()
-                        usr.mail = mail
-                        usr.passWrd = passWrd*/
-
-                        val intent=Intent(this@InscriptionScreen, ConnexionScreen::class.java)
+                        val intent = Intent(this@InscriptionScreen, ConnexionScreen::class.java)
                         intent.putExtra("e-mail", mail)
                         intent.putExtra("pass", passWrd)
+
                         startActivity(intent)
 
-                        //Toast.makeText(this@InscriptionScreen, ""+usr.mail, Toast.LENGTH_LONG).show()
-
-                        //startActivity(Intent(this@InscriptionScreen, ConnexionScreen::class.java))
                     }
                 }
             }
 
             errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
                 runOnUiThread {
-                    Toast.makeText(this@InscriptionScreen, "Camera initialization error: ${it.message}",
-                        Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@InscriptionScreen, "Camera initialization error: ${it.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
-
-            codeScanner.startPreview()
-
-            /*binding.scannerView.setOnClickListener {
-                codeScanner.startPreview()
-            }*/
         }
+        codeScanner.startPreview()
     }
 
 
@@ -246,7 +261,7 @@ class InscriptionScreen : AppCompatActivity() {
 
     private fun validePassWrd(): String? {
         if (TextUtils.isEmpty(binding.passWrdInscription.text)) {
-            return "Veuillez saisir votre mot de passe!"
+            return "Veuillez saisir un mot de passe!"
         } else if (binding.passWrdInscription.length() < 5) {
             return "Votre mot de passe doit contenir au moins 5 caractères"
         }
@@ -260,7 +275,7 @@ class InscriptionScreen : AppCompatActivity() {
     }
 
     private fun valideConfirmPassWrd(): String? {
-        return if (TextUtils.isEmpty(binding.ConfirmPassWrdInscription.text)) "Confirmez votre mot de passe" else null
+        return if (TextUtils.isEmpty(binding.ConfirmPassWrdInscription.text)) "Confirmez le mot de passe" else null
     }
 
     private fun confirmPassWrdFocusListener() {
