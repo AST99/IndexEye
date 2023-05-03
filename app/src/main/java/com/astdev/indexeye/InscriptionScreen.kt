@@ -16,9 +16,7 @@ import com.astdev.indexeye.databinding.InscriptionScreenBinding
 import com.budiyev.android.codescanner.*
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import java.util.*
 
 
@@ -43,8 +41,7 @@ class InscriptionScreen : AppCompatActivity() {
         binding = InscriptionScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        auth = Firebase.auth
-
+        auth = FirebaseAuth.getInstance()
 
         setupPermission()
 
@@ -53,11 +50,13 @@ class InscriptionScreen : AppCompatActivity() {
         passWrdFocusListener()
         confirmPassWrdFocusListener()
 
-        binding.txtViewAccessAccount.setOnClickListener { startActivity(Intent(this, ConnexionScreen::class.java)) }
+        binding.txtViewAccessAccount.setOnClickListener {
+            startActivity(Intent(this, ConnexionScreen::class.java)) }
 
         binding.btnNextAndSignIn.setOnClickListener {
             if (binding.Etape1.isVisible){
-                if (TextUtils.isEmpty(binding.InscriptionNomPrenom.text) && TextUtils.isEmpty(binding.MailInscription.text)){
+                if (TextUtils.isEmpty(binding.InscriptionNomPrenom.text) &&
+                    TextUtils.isEmpty(binding.MailInscription.text)){
                     binding.NameInscriptionContainer.error = "Le nom et le prénom sont requis!"
                     binding.InscriptionMailContainer.error = "Votre e-mail est requis!"
                 }
@@ -67,15 +66,13 @@ class InscriptionScreen : AppCompatActivity() {
                 if (TextUtils.isEmpty(binding.passWrdInscription.text)) {
                     binding.passWrdIncrptionContainer.error = "Veuillez saisir votre mot de passe!"
                 } else if (binding.passWrdInscription.length() < 5) {
-                    binding.passWrdIncrptionContainer.error = "Votre mot de passe doit contenir au moins 5 caractères"
+                    binding.passWrdIncrptionContainer.error = "Votre mot de passe doit contenir " +
+                            "au moins 5 caractères"
                 } else if (TextUtils.isEmpty(binding.ConfirmPassWrdInscription.text)) {
                     binding.ConfirmPassWrdIncrptionContainer.error = "Confirmez votre mot de passe!"
                 }
-                else {
-                    step2Done()
-                }
+                else step2Done()
             }
-
         }
 
         binding.btnPrecedAndSignIn.setOnClickListener {
@@ -122,7 +119,6 @@ class InscriptionScreen : AppCompatActivity() {
     //=>m: mail, p: mot de passe, n: nom/prénom
     private fun createSimpleUserWithMail(m: String, p: String, n: String) {
         try {
-
             auth.createUserWithEmailAndPassword(m, p).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val user = UsersModels(m, n, p)
@@ -132,18 +128,12 @@ class InscriptionScreen : AppCompatActivity() {
                         .setValue(user).addOnCompleteListener { task1: Task<Void?> ->
                             if (task1.isSuccessful) {
                                 auth.currentUser
-                            } else {
-                                Toast.makeText(
-                                    this@InscriptionScreen, """Votre inscription n'a pas été fait !
- Essayez à nouveau""", Toast.LENGTH_LONG).show()
-                            }
+                            } else Toast.makeText(this@InscriptionScreen,
+                                "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
                         }
-                } else {
-                    Toast.makeText(
-                        this@InscriptionScreen, """Votre inscription n'a pas été fait !
- Essayez à nouveau""", Toast.LENGTH_LONG
-                    ).show()
-                }
+                } else
+                    Toast.makeText(this@InscriptionScreen, "Votre inscription a échoué! " +
+                        "Essayez à nouveau.", Toast.LENGTH_LONG).show()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -166,8 +156,6 @@ class InscriptionScreen : AppCompatActivity() {
             decodeCallback = DecodeCallback {
                 runOnUiThread {
                     qrScannResult = it.text
-
-                    //Toast.makeText(this@InscriptionScreen, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
 
                     binding.imgViewSucces.visibility = View.VISIBLE
                     binding.txtViewAccessAccount.visibility = View.GONE
@@ -290,8 +278,7 @@ class InscriptionScreen : AppCompatActivity() {
     }*/
 
     override fun onPause() {
-        codeScanner.releaseResources()
+        //codeScanner.releaseResources()
         super.onPause()
     }
-
 }
