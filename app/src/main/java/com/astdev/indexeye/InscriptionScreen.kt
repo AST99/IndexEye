@@ -14,11 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.astdev.indexeye.databinding.InscriptionScreenBinding
 import com.budiyev.android.codescanner.*
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
-
 
 private const val CAMERA_REQUEST_CODE = 101
 
@@ -31,7 +29,6 @@ class InscriptionScreen : AppCompatActivity() {
     private lateinit var mail:String
     private lateinit var passWrd:String
     private lateinit var qrScannResult:String
-
 
     private lateinit var auth: FirebaseAuth
 
@@ -83,7 +80,6 @@ class InscriptionScreen : AppCompatActivity() {
                 binding.btnPrecedAndSignIn.visibility = View.GONE
             }
         }
-
     }
 
     private fun step1Done(){
@@ -118,28 +114,23 @@ class InscriptionScreen : AppCompatActivity() {
     /******************************Inscription simple utilisateur */
     //=>m: mail, p: mot de passe, n: nom/prénom
     private fun createSimpleUserWithMail(m: String, p: String, n: String) {
-        try {
-            auth.createUserWithEmailAndPassword(m, p).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = UsersModels(m, n, p)
-                    FirebaseDatabase.getInstance().getReference("Users")
-                        //.child(Objects.requireNonNull(FirebaseAuth.getInstance().currentUser)!!.uid)
-                        .child(qrScannResult).child("User info")
-                        .setValue(user).addOnCompleteListener { task1: Task<Void?> ->
-                            if (task1.isSuccessful) {
-                                auth.currentUser
-                            } else Toast.makeText(this@InscriptionScreen,
-                                "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
+        auth.createUserWithEmailAndPassword(m, p).addOnCompleteListener { it ->
+            if (it.isSuccessful) {
+                val user = UsersModels(m, n, p)
+                FirebaseDatabase.getInstance().getReference("Users").child(qrScannResult)
+                    .child("User info").setValue(user).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Toast.makeText(this, "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
+                            auth.currentUser
                         }
-                } else
-                    Toast.makeText(this@InscriptionScreen, "Votre inscription a échoué! " +
-                        "Essayez à nouveau.", Toast.LENGTH_LONG).show()
+                        else Toast.makeText(this, "Votre inscription a échoué! " +
+                                    "Essayez à nouveau.", Toast.LENGTH_LONG).show()
+                    }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            else Toast.makeText(this, "Votre inscription a échoué! Essayez à nouveau.",
+                Toast.LENGTH_LONG).show()
         }
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun qrCodeScanner(){
@@ -270,15 +261,5 @@ class InscriptionScreen : AppCompatActivity() {
         binding.ConfirmPassWrdInscription.setOnFocusChangeListener { _, b ->
             if (!b) binding.ConfirmPassWrdIncrptionContainer.error = valideConfirmPassWrd()
         }
-    }
-
-    /*override fun onResume() {
-        super.onResume()
-        codeScanner.startPreview()
-    }*/
-
-    override fun onPause() {
-        //codeScanner.releaseResources()
-        super.onPause()
     }
 }
