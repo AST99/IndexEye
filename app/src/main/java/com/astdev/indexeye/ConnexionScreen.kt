@@ -1,5 +1,7 @@
 package com.astdev.indexeye
 
+import android.R
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -7,9 +9,11 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.astdev.indexeye.AlertDialogClass.Companion.progressDialog
 import com.astdev.indexeye.databinding.ConnexionScreenBinding
 import com.google.firebase.auth.FirebaseAuth
 import java.util.Objects
+
 
 class ConnexionScreen : AppCompatActivity() {
 
@@ -45,6 +49,8 @@ class ConnexionScreen : AppCompatActivity() {
         val mail: String = binding.Mail.text.toString().trim()
         val passWrd: String = binding.passWrd.text.toString().trim()
 
+        val dialog = progressDialog(this@ConnexionScreen)
+
         if ( /*valideMail()!=null || */TextUtils.isEmpty(binding.Mail.text))
             binding.mailContainer.error = "Votre e-mail est requis!"
         else if ( /*validePassWrd()!=null*/TextUtils.isEmpty(binding.passWrd.text))
@@ -53,13 +59,19 @@ class ConnexionScreen : AppCompatActivity() {
             binding.passWrdContainer.error = "Votre mot de passe doit contenir au moins 5 caractères"
         else {
             if (mail.isNotEmpty() && passWrd.isNotEmpty()){
+
+                dialog.show()
+
                 auth.signInWithEmailAndPassword(mail, passWrd).addOnCompleteListener {
+
                     if (it.isSuccessful) {
-                        val intent = Intent(this, HomeScreen::class.java)
-                        startActivity(intent)
+                        startActivity(Intent(this, HomeScreen::class.java))
+                        dialog.dismiss()
+
                     } else {
                         Toast.makeText(this, "Adresse mail ou " +
                                 "mot de passe incorrecte", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
                     }
                 }
             } else
