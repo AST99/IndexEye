@@ -6,14 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 
 
 class AlertDialogClass {
@@ -67,8 +60,8 @@ class AlertDialogClass {
     }*/
 
         @SuppressLint("InflateParams")
-        fun progressDialog(context: Context): Dialog {
-            val dialog = Dialog(context)
+        fun progressDialog(context: Context?): Dialog {
+            val dialog = Dialog(context!!)
             val inflate = LayoutInflater.from(context).inflate(R.layout.loading_dialog, null)
             dialog.setContentView(inflate)
             dialog.setCancelable(false)

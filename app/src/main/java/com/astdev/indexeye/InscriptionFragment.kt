@@ -1,44 +1,63 @@
 package com.astdev.indexeye
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.astdev.indexeye.databinding.InscriptionScreenBinding
-import com.budiyev.android.codescanner.*
+import androidx.fragment.app.Fragment
+import com.astdev.indexeye.databinding.FragmentInscriptionBinding
+import com.budiyev.android.codescanner.AutoFocusMode
+import com.budiyev.android.codescanner.CodeScanner
+import com.budiyev.android.codescanner.DecodeCallback
+import com.budiyev.android.codescanner.ErrorCallback
+import com.budiyev.android.codescanner.ScanMode
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import java.util.*
+import java.util.Objects
 
 private const val CAMERA_REQUEST_CODE = 101
 
-class InscriptionScreen : AppCompatActivity() {
+
+class InscriptionFragment : Fragment() {
+
 
     private lateinit var codeScanner: CodeScanner
 
-    private lateinit var binding: InscriptionScreenBinding
     private lateinit var names:String
     private lateinit var mail:String
     private lateinit var passWrd:String
     private lateinit var qrScannResult:String
 
     private lateinit var auth: FirebaseAuth
+    private var thisContext: Context? = null
+
+    private lateinit var binding: FragmentInscriptionBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = InscriptionScreenBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         auth = FirebaseAuth.getInstance()
+
+        binding = FragmentInscriptionBinding.inflate(layoutInflater)
+
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        // Inflate the layout for this fragment
+
+        binding = FragmentInscriptionBinding.inflate(inflater, container, false)
+
+        thisContext = container!!.context
+
 
         setupPermission()
 
@@ -48,7 +67,9 @@ class InscriptionScreen : AppCompatActivity() {
         confirmPassWrdFocusListener()
 
         binding.txtViewAccessAccount.setOnClickListener {
-            startActivity(Intent(this, ConnexionScreen::class.java)) }
+            val connexionFragment = ConnexionFragment()
+            fragmentManager?.beginTransaction()?.replace(R.id.nav_1, connexionFragment)?.commit()
+        }
 
         binding.btnNextAndSignIn.setOnClickListener {
             if (binding.Etape1.isVisible){
@@ -80,6 +101,8 @@ class InscriptionScreen : AppCompatActivity() {
                 binding.btnPrecedAndSignIn.visibility = View.GONE
             }
         }
+
+        return binding.root
     }
 
     private fun step1Done(){
@@ -120,32 +143,34 @@ class InscriptionScreen : AppCompatActivity() {
                 FirebaseDatabase.getInstance().getReference("Users").child(qrScannResult)
                     .child("User info").setValue(user).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            Toast.makeText(this, "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
+                            Toast.makeText(activity, "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
                             auth.currentUser
                         }
-                        else Toast.makeText(this, "Votre inscription a échoué! " +
-                                    "Essayez à nouveau.", Toast.LENGTH_LONG).show()
+                        else Toast.makeText(activity, "Votre inscription a échoué ! " +
+                                "Essayez à nouveau ou vérifiez votre connexion internet.", Toast.LENGTH_LONG).show()
                     }
             }
-            else Toast.makeText(this, "Votre inscription a échoué! Essayez à nouveau.",
+            else Toast.makeText(activity, "Votre inscription a échoué ! " +
+                    "Essayez à nouveau ou vérifiez votre connexion internet.",
                 Toast.LENGTH_LONG).show()
         }
     }
 
+
     @SuppressLint("SetTextI18n")
     private fun qrCodeScanner(){
-        codeScanner = CodeScanner(this, binding.scannerView)
+        codeScanner = CodeScanner(thisContext!!, binding.scannerView)
 
         codeScanner.apply {
             camera = CodeScanner.CAMERA_BACK
             formats = CodeScanner.ALL_FORMATS
             autoFocusMode = AutoFocusMode.SAFE
-            scanMode = ScanMode.SINGLE
+            scanMode = ScanMode.CONTINUOUS
             isAutoFocusEnabled = true
             isFlashEnabled = false
 
             decodeCallback = DecodeCallback {
-                runOnUiThread {
+                activity?.runOnUiThread {
                     qrScannResult = it.text
 
                     binding.imgViewSucces.visibility = View.VISIBLE
@@ -160,24 +185,19 @@ class InscriptionScreen : AppCompatActivity() {
                     binding.btnNextAndSignIn.visibility = View.VISIBLE
                     binding.btnNextAndSignIn.text = "Connexion"
 
-                    createSimpleUserWithMail(mail, passWrd, names)
-
                     binding.btnNextAndSignIn.setOnClickListener {
-
-                        val intent = Intent(this@InscriptionScreen, ConnexionScreen::class.java)
-                        intent.putExtra("e-mail", mail)
-                        intent.putExtra("pass", passWrd)
-
-                        startActivity(intent)
-
+                        createSimpleUserWithMail(mail, passWrd, names)
+                        val connexionFragment = ConnexionFragment()
+                        fragmentManager?.beginTransaction()?.replace(R.id.nav_1, connexionFragment)?.commit()
+                        activity?.intent?.putExtra("e-mail", mail)
+                        activity?.intent?.putExtra("pass", passWrd)
                     }
                 }
             }
 
             errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
-                runOnUiThread {
-                    Toast.makeText(
-                        this@InscriptionScreen, "Camera initialization error: ${it.message}",
+                activity?.runOnUiThread  {
+                    Toast.makeText(activity, "Camera initialization error: ${it.message}",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -188,25 +208,21 @@ class InscriptionScreen : AppCompatActivity() {
 
 
     private fun setupPermission(){
-        val permission:Int = ContextCompat.checkSelfPermission(this,
-            android.Manifest.permission.CAMERA)
+        val permission:Int = ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
 
         if (permission != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA),
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.CAMERA),
                 CAMERA_REQUEST_CODE)
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when(requestCode){
             CAMERA_REQUEST_CODE->{
-                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(this@InscriptionScreen,"L'accès à la camera est nécessaire", Toast.LENGTH_LONG).show()
-                }
-                else{
-                    //
-                }
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED)
+                    Toast.makeText(activity,"L'accès à la camera est nécessaire", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -262,4 +278,5 @@ class InscriptionScreen : AppCompatActivity() {
             if (!b) binding.ConfirmPassWrdIncrptionContainer.error = valideConfirmPassWrd()
         }
     }
+
 }

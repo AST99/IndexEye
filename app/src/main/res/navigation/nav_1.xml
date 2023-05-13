@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_1"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.astdev.indexeye.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome" />
+    <fragment
+        android:id="@+id/inscriptionFragment"
+        android:name="com.astdev.indexeye.InscriptionFragment"
+        android:label="fragment_inscription"
+        tools:layout="@layout/fragment_inscription" />
+    <fragment
+        android:id="@+id/connexionFragment"
+        android:name="com.astdev.indexeye.ConnexionFragment"
+        android:label="fragment_connexion"
+        tools:layout="@layout/fragment_connexion" />
+</navigation>

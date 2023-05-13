@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false"/>
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IndexEye"
         tools:targetApi="31">
-
+        <activity
+            android:name=".WelcomeScreen"
+            android:exported="false" />
         <activity
             android:name=".InscriptionScreen"
             android:exported="false" />
@@ -28,7 +30,7 @@
             android:name=".ConnexionScreen"
             android:exported="false" />
         <activity
-            android:name=".WelcomeScreen"
+            android:name=".FirstActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
