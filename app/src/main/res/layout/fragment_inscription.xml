@@ -55,8 +55,17 @@
                 android:id="@+id/progressStep3"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="0dp"
+                android:layout_marginEnd="5dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
+
+            <ProgressBar
+                android:id="@+id/progressStep4"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -69,12 +78,12 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/NameInscriptionContainer"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:errorEnabled="true"
-                app:placeholderTextColor="#a2b5bb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
-                android:hint="Nom et Prénoms">
+                android:hint="Nom et Prénoms"
+                app:errorEnabled="true"
+                app:placeholderTextColor="#a2b5bb">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/InscriptionNomPrenom"
@@ -88,6 +97,10 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/InscriptionMailContainer"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/e_mail"
                 app:endIconDrawable="@drawable/ic_mail"
                 app:endIconMode="custom"
                 app:errorEnabled="true"
@@ -95,11 +108,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtViewConnexion"
                 app:placeholderText="exemple@ploof.com"
-                app:placeholderTextColor="#a2b5bb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="@string/e_mail">
+                app:placeholderTextColor="#a2b5bb">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/MailInscription"
@@ -170,13 +179,76 @@
             android:orientation="vertical"
             android:visibility="gone">
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/InscriptionPhoneContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/phone_number"
+                app:endIconDrawable="@drawable/ic_phone"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:placeholderText="05000000"
+                app:placeholderTextColor="#a2b5bb">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/PhoneInscription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="Je m'inscris en tant que :"
+                android:textColor="@color/black"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Particulier" />
+
+                <RadioButton
+                    android:id="@+id/radioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Plombier" />
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/Etape4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
             <ImageView
                 android:id="@+id/imgViewSucces"
-                app:srcCompat="@drawable/ic_check"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_check" />
 
             <TextView
                 android:id="@+id/txtViewSucces"
@@ -208,18 +280,6 @@
                 android:text="@string/associer_l_appareil_l_aide_d_un_code_qr"
                 android:textColor="@color/black"
                 android:textSize="17sp"
-                android:visibility="visible" />
-
-            <com.budiyev.android.codescanner.CodeScannerView
-                android:id="@+id/scanner_view"
-                app:autoFocusButtonColor="@color/white"
-                app:autoFocusButtonVisible="true"
-                app:flashButtonColor="@color/white"
-                app:flashButtonVisible="true"
-                app:maskColor="#6C000000"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
                 android:visibility="visible" />
 
         </LinearLayout>

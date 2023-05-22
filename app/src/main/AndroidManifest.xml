@@ -17,17 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IndexEye"
         tools:targetApi="31">
-        <activity
-            android:name=".WelcomeScreen"
-            android:exported="false" />
-        <activity
-            android:name=".InscriptionScreen"
-            android:exported="false" />
+
         <activity
             android:name=".HomeScreen"
-            android:exported="false" />
-        <activity
-            android:name=".ConnexionScreen"
             android:exported="false" />
         <activity
             android:name=".FirstActivity"
