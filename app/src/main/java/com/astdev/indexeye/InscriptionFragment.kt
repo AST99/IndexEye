@@ -154,6 +154,7 @@ class InscriptionFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun stepThree(){
 
         if (TextUtils.isEmpty(binding.PhoneInscription.text)){
@@ -190,6 +191,7 @@ class InscriptionFragment : Fragment() {
         intentIntegrator.initiateScan()
     }
 
+    @SuppressLint("SetTextI18n")
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
@@ -215,7 +217,6 @@ class InscriptionFragment : Fragment() {
 
                 binding.btnNextAndSignIn.setOnClickListener {
                     createSimpleUserWithMail(mail, passWrd, names, phone, qrResult)
-
                 }
             }
         } else super.onActivityResult(requestCode, resultCode, data)
