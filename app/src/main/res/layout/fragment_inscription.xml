@@ -130,16 +130,16 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/passWrdIncrptionContainer"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:hint="@string/mot_de_passe"
                 app:endIconMode="password_toggle"
                 app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="@+id/mailContainer"
                 app:layout_constraintHorizontal_bias="0.307"
                 app:layout_constraintStart_toStartOf="@+id/mailContainer"
-                app:layout_constraintTop_toBottomOf="@+id/mailContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
-                android:hint="@string/mot_de_passe">
+                app:layout_constraintTop_toBottomOf="@+id/mailContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/passWrdInscription"
@@ -152,16 +152,16 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/ConfirmPassWrdIncrptionContainer"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/confirmer_le_mot_de_passe"
                 app:endIconMode="password_toggle"
                 app:errorEnabled="true"
                 app:layout_constraintEnd_toEndOf="@+id/mailContainer"
                 app:layout_constraintHorizontal_bias="0.307"
                 app:layout_constraintStart_toStartOf="@+id/mailContainer"
-                app:layout_constraintTop_toBottomOf="@+id/mailContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="@string/confirmer_le_mot_de_passe">
+                app:layout_constraintTop_toBottomOf="@+id/mailContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ConfirmPassWrdInscription"
@@ -214,19 +214,20 @@
                 android:textStyle="bold" />
 
             <RadioGroup
+                android:id="@+id/radioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/radioButton2"
+                    android:id="@+id/radiobtnSimpleUser"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Particulier" />
 
                 <RadioButton
-                    android:id="@+id/radioButton"
+                    android:id="@+id/radioBtnPlumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -243,12 +244,22 @@
             android:visibility="gone">
 
             <ImageView
+                android:id="@+id/imgViewCodeBar"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                app:srcCompat="@drawable/code_bar" />
+
+            <ImageView
                 android:id="@+id/imgViewSucces"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal"
+                android:contentDescription="Success image"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_check" />
+                app:srcCompat="@drawable/ic_check"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/txtViewSucces"
@@ -257,6 +268,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
+                android:gravity="center"
                 android:text="Votre compte a été créer avec succès !"
                 android:textColor="@color/black"
                 android:textSize="15sp"
@@ -267,19 +279,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Scanner le code QR"
+                android:text="Scanner le code barre présent sur votre device"
                 android:textColor="@color/black"
                 android:textSize="25sp"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/txtQr2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/associer_l_appareil_l_aide_d_un_code_qr"
-                android:textColor="@color/black"
-                android:textSize="17sp"
                 android:visibility="visible" />
 
         </LinearLayout>

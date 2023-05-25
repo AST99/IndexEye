@@ -20,4 +20,9 @@
         android:name="com.astdev.indexeye.ConnexionFragment"
         android:label="fragment_connexion"
         tools:layout="@layout/fragment_connexion" />
+    <fragment
+        android:id="@+id/inscriptionFail"
+        android:name="com.astdev.indexeye.InscriptionFail"
+        android:label="fragment_inscription_fail"
+        tools:layout="@layout/fragment_inscription_fail" />
 </navigation>
