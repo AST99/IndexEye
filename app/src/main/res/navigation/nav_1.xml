@@ -25,4 +25,9 @@
         android:name="com.astdev.indexeye.InscriptionFail"
         android:label="fragment_inscription_fail"
         tools:layout="@layout/fragment_inscription_fail" />
+    <fragment
+        android:id="@+id/plumberInscriptionFragment"
+        android:name="com.astdev.indexeye.PlumberInscriptionFragment"
+        android:label="fragment_plumber_inscription"
+        tools:layout="@layout/fragment_plumber_inscription" />
 </navigation>

@@ -29,6 +29,8 @@ class InscriptionFragment : Fragment() {
     private lateinit var qrResult: String
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var pAuth: FirebaseAuth
+
     private var thisContext: Context? = null
 
     private lateinit var userType: String
@@ -39,19 +41,17 @@ class InscriptionFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         auth = FirebaseAuth.getInstance()
+        pAuth = FirebaseAuth.getInstance()
 
         binding = FragmentInscriptionBinding.inflate(layoutInflater)
-
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        // Inflate the layout for this fragment
 
         binding = FragmentInscriptionBinding.inflate(inflater, container, false)
 
         thisContext = container!!.context
-
-        //setupPermission()
 
         nameFocusListener()
         mailFocusListener()
@@ -61,11 +61,14 @@ class InscriptionFragment : Fragment() {
         binding.radioGroup.setOnCheckedChangeListener { _, _ ->
             if (binding.radiobtnSimpleUser.isChecked) {
                 userType = "Simple Users"
-                Toast.makeText(requireContext(),userType,Toast.LENGTH_LONG).show()
+                binding.btnNextAndSignIn.visibility = View.VISIBLE
+                binding.btnPrecedAndSignIn.visibility = View.VISIBLE
+                binding.btnPlumberInscription.visibility = View.GONE
+                //Toast.makeText(requireContext(),userType,Toast.LENGTH_LONG).show()
             }
             if(binding.radioBtnPlumber.isChecked) {
                 userType = "Plumbers"
-                Toast.makeText(requireContext(),userType,Toast.LENGTH_LONG).show()
+                //Toast.makeText(requireContext(),userType,Toast.LENGTH_LONG).show()
             }
         }
 
@@ -88,20 +91,21 @@ class InscriptionFragment : Fragment() {
                 } else if (binding.passWrdInscription.length() < 5) {
                     binding.passWrdIncrptionContainer.error = "Votre mot de passe doit contenir " +
                             "au moins 5 caractères"
-                } else if (TextUtils.isEmpty(binding.ConfirmPassWrdInscription.text)) {
+                } else if (TextUtils.isEmpty(binding.ConfirmPassWrdInscription.text))
                     binding.ConfirmPassWrdIncrptionContainer.error = "Confirmez votre mot de passe!"
-                }
                 else stepTwo()
             }
             else if (binding.Etape3.isVisible){
-                if (TextUtils.isEmpty(binding.PhoneInscription.text)){
+                if (TextUtils.isEmpty(binding.PhoneInscription.text))
                     binding.InscriptionPhoneContainer.error = "Votre numéro de téléphone est réquis!"
-                }
                 else stepThree()
             }
         }
 
         binding.btnPrecedAndSignIn.setOnClickListener {
+            binding.btnNextAndSignIn.visibility = View.VISIBLE
+            binding.btnNextAndSignIn.text = "Suivant"
+            binding.btnScan.visibility = View.GONE
             if(binding.Etape2.isVisible){
                 binding.Etape2.visibility = View.GONE
                 binding.progressStep1.progress = 0
@@ -167,23 +171,47 @@ class InscriptionFragment : Fragment() {
             binding.InscriptionPhoneContainer.error = null
             phone = Objects.requireNonNull(binding.PhoneInscription.text).toString().trim { it <= ' ' }
 
-            //Step4 pour lancer le scan
-            binding.txtViewAccessAccount.visibility = View.GONE
-            binding.txtQr1.visibility = View.VISIBLE
-            binding.imgViewCodeBar.visibility = View.VISIBLE
-            binding.linearLayoutSteps.visibility = View.VISIBLE
-            binding.btnPrecedAndSignIn.visibility = View.GONE
-            binding.progressStep4.progress = 0
-            binding.btnNextAndSignIn.visibility = View.VISIBLE
-            binding.btnNextAndSignIn.text = "Lancer le scan"
 
-            binding.btnNextAndSignIn.setOnClickListener {
-                qr_reader()
+            if (userType == "Plumbers"){
+                binding.btnScan.visibility = View.GONE
+                binding.txtViewAccessAccount.visibility = View.GONE
+                binding.txtQr1.visibility = View.VISIBLE
+                binding.txtQr1.text = "Vous allez vous inscrire en tant que plombier"
+                binding.imgViewPlumber.visibility = View.VISIBLE
+                binding.imgViewCodeBar.visibility = View.GONE
+                binding.linearLayoutSteps.visibility = View.VISIBLE
+                binding.btnPrecedAndSignIn.visibility = View.GONE
+                binding.progressStep4.progress = 0
+                binding.btnNextAndSignIn.visibility = View.VISIBLE
+                binding.btnNextAndSignIn.text = "Valider"
+                binding.btnPrecedAndSignIn.visibility = View.VISIBLE
+
+                binding.btnNextAndSignIn.setOnClickListener {
+                    createPlumberWithMail(mail, passWrd, names, phone)
+                }
+            }
+
+            if (userType == "Simple Users"){
+                //Step4 pour lancer le scan
+                binding.txtViewAccessAccount.visibility = View.GONE
+                binding.txtQr1.visibility = View.VISIBLE
+                binding.imgViewCodeBar.visibility = View.VISIBLE
+                binding.imgViewPlumber.visibility = View.GONE
+                binding.linearLayoutSteps.visibility = View.VISIBLE
+                binding.btnPrecedAndSignIn.visibility = View.GONE
+                binding.progressStep4.progress = 0
+                binding.btnNextAndSignIn.visibility = View.GONE
+                binding.btnPrecedAndSignIn.visibility = View.VISIBLE
+                binding.btnScan.visibility = View.VISIBLE
+
+                binding.btnScan.setOnClickListener {
+                    barCodeReader()
+                }
             }
         }
     }
 
-    private fun qr_reader() {
+    private fun barCodeReader() {
         val intentIntegrator: IntentIntegrator = IntentIntegrator.forSupportFragment(this)
         intentIntegrator.setOrientationLocked(false)
         intentIntegrator.setPrompt("Scanner SVP")
@@ -213,7 +241,8 @@ class InscriptionFragment : Fragment() {
                 binding.progressStep4.progress = 100
                 binding.btnNextAndSignIn.visibility = View.VISIBLE
 
-                binding.btnNextAndSignIn.text = "Finir"
+                binding.btnNextAndSignIn.text = "Valider"
+                binding.btnScan.visibility = View.GONE
 
                 binding.btnNextAndSignIn.setOnClickListener {
                     createSimpleUserWithMail(mail, passWrd, names, phone, qrResult)
@@ -222,7 +251,6 @@ class InscriptionFragment : Fragment() {
         } else super.onActivityResult(requestCode, resultCode, data)
     }
 
-
     /******************************Inscription simple utilisateur */
     //=>m: mail, p: mot de passe, n: nom/prénom, tel: numéro de téléphone, deviceId
     @SuppressLint("SetTextI18n")
@@ -230,8 +258,8 @@ class InscriptionFragment : Fragment() {
         auth.createUserWithEmailAndPassword(m, p).addOnCompleteListener { it ->
             if (it.isSuccessful) {
                 val user = UsersModels(m, n, p, tel, deviceId)
-                FirebaseDatabase.getInstance().getReference(userType/*"Users"*/)./*child(userType).*/child(deviceId)
-                    .child("User info").setValue(user).addOnCompleteListener {
+                FirebaseDatabase.getInstance().getReference(userType).child(deviceId)
+                    .child("User Info").setValue(user).addOnCompleteListener {
                         if (it.isSuccessful) {
 
                             val connexionFragment = ConnexionFragment()
@@ -243,6 +271,40 @@ class InscriptionFragment : Fragment() {
                             binding.txtViewSucces.text = "Votre inscription a réussi !"
                             Toast.makeText(activity, "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
                             auth.currentUser
+                        }
+                        else {
+                            val failFragment = InscriptionFail()
+                            fragmentManager?.beginTransaction()?.replace(R.id.nav_1, failFragment)?.commit()
+                        }
+                    }
+            }
+            else {
+                val failFragment = InscriptionFail()
+                fragmentManager?.beginTransaction()?.replace(R.id.nav_1, failFragment)?.commit()
+            }
+        }
+    }
+
+
+    /******************************Inscription plumber*/
+    @SuppressLint("SetTextI18n")
+    private fun createPlumberWithMail(m: String, p: String, n: String, tel: String) {
+        pAuth.createUserWithEmailAndPassword(m, p).addOnCompleteListener { it ->
+            if (it.isSuccessful) {
+                val user = UsersModels(m, n, p, tel)
+                FirebaseDatabase.getInstance().getReference(userType)
+                    .child("User Info").setValue(user).addOnCompleteListener {
+                        if (it.isSuccessful) {
+
+                            val connexionFragment = ConnexionFragment()
+                            fragmentManager?.beginTransaction()?.replace(R.id.nav_1, connexionFragment)?.commit()
+                            activity?.intent?.putExtra("e-mail", mail)
+                            activity?.intent?.putExtra("pass", passWrd)
+
+                            binding.imgViewSucces.visibility = View.VISIBLE
+                            binding.txtViewSucces.text = "Votre inscription a réussi !"
+                            Toast.makeText(activity, "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
+                            pAuth.currentUser
                         }
                         else {
                             val failFragment = InscriptionFail()
