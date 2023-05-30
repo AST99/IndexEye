@@ -6,11 +6,6 @@
     app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.astdev.indexeye.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
-    <fragment
         android:id="@+id/servicesFragment"
         android:name="com.astdev.indexeye.ServicesFragment"
         android:label="fragment_services"
@@ -20,4 +15,9 @@
         android:name="com.astdev.indexeye.UserProfilFragment"
         android:label="fragment_user_profil"
         tools:layout="@layout/fragment_user_profil" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.astdev.indexeye.homeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
 </navigation>

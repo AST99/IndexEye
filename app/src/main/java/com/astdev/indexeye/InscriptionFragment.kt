@@ -1,7 +1,6 @@
 package com.astdev.indexeye
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -13,7 +12,11 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.astdev.indexeye.databinding.FragmentInscriptionBinding
+import com.astdev.indexeye.models.PlumberModels
+import com.astdev.indexeye.models.UsersModels
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.zxing.integration.android.IntentIntegrator
 import java.util.Objects
@@ -30,8 +33,9 @@ class InscriptionFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var pAuth: FirebaseAuth
-
-    private var thisContext: Context? = null
+    private lateinit var database: FirebaseDatabase
+    private lateinit var simpleUserDatabaseReference: DatabaseReference
+    private lateinit var plumberDatabaseReference: DatabaseReference
 
     private lateinit var userType: String
 
@@ -42,6 +46,11 @@ class InscriptionFragment : Fragment() {
 
         auth = FirebaseAuth.getInstance()
         pAuth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance()
+        simpleUserDatabaseReference = database.getReference("Simple Users")
+        plumberDatabaseReference = database.getReference("Plumbers")
+
+
 
         binding = FragmentInscriptionBinding.inflate(layoutInflater)
     }
@@ -51,8 +60,6 @@ class InscriptionFragment : Fragment() {
 
         binding = FragmentInscriptionBinding.inflate(inflater, container, false)
 
-        thisContext = container!!.context
-
         nameFocusListener()
         mailFocusListener()
         passWrdFocusListener()
@@ -60,15 +67,12 @@ class InscriptionFragment : Fragment() {
 
         binding.radioGroup.setOnCheckedChangeListener { _, _ ->
             if (binding.radiobtnSimpleUser.isChecked) {
-                userType = "Simple Users"
                 binding.btnNextAndSignIn.visibility = View.VISIBLE
                 binding.btnPrecedAndSignIn.visibility = View.VISIBLE
                 binding.btnPlumberInscription.visibility = View.GONE
-                //Toast.makeText(requireContext(),userType,Toast.LENGTH_LONG).show()
             }
             if(binding.radioBtnPlumber.isChecked) {
                 userType = "Plumbers"
-                //Toast.makeText(requireContext(),userType,Toast.LENGTH_LONG).show()
             }
         }
 
@@ -188,6 +192,7 @@ class InscriptionFragment : Fragment() {
 
                 binding.btnNextAndSignIn.setOnClickListener {
                     createPlumberWithMail(mail, passWrd, names, phone)
+                    //newCreateSimpleUserWithMail(mail, passWrd, names, phone, qrResult)
                 }
             }
 
@@ -255,28 +260,22 @@ class InscriptionFragment : Fragment() {
     //=>m: mail, p: mot de passe, n: nom/prénom, tel: numéro de téléphone, deviceId
     @SuppressLint("SetTextI18n")
     private fun createSimpleUserWithMail(m: String, p: String, n: String, tel: String, deviceId: String) {
-        auth.createUserWithEmailAndPassword(m, p).addOnCompleteListener { it ->
+
+        auth.createUserWithEmailAndPassword(m, p).addOnCompleteListener {
             if (it.isSuccessful) {
                 val user = UsersModels(m, n, p, tel, deviceId)
-                FirebaseDatabase.getInstance().getReference(userType).child(deviceId)
-                    .child("User Info").setValue(user).addOnCompleteListener {
-                        if (it.isSuccessful) {
+                simpleUserDatabaseReference.child(Objects.requireNonNull<FirebaseUser?>(FirebaseAuth
+                    .getInstance().currentUser).uid).setValue(user).addOnSuccessListener {
+                    val connexionFragment = ConnexionFragment()
+                    fragmentManager?.beginTransaction()?.replace(R.id.nav_1, connexionFragment)?.commit()
+                    activity?.intent?.putExtra("e-mail", mail)
+                    activity?.intent?.putExtra("pass", passWrd)
 
-                            val connexionFragment = ConnexionFragment()
-                            fragmentManager?.beginTransaction()?.replace(R.id.nav_1, connexionFragment)?.commit()
-                            activity?.intent?.putExtra("e-mail", mail)
-                            activity?.intent?.putExtra("pass", passWrd)
-
-                            binding.imgViewSucces.visibility = View.VISIBLE
-                            binding.txtViewSucces.text = "Votre inscription a réussi !"
-                            Toast.makeText(activity, "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
-                            auth.currentUser
-                        }
-                        else {
-                            val failFragment = InscriptionFail()
-                            fragmentManager?.beginTransaction()?.replace(R.id.nav_1, failFragment)?.commit()
-                        }
-                    }
+                    binding.imgViewSucces.visibility = View.VISIBLE
+                    binding.txtViewSucces.text = "Votre inscription a réussi !"
+                    Toast.makeText(activity, "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
+                    auth.currentUser
+                }
             }
             else {
                 val failFragment = InscriptionFail()
@@ -289,28 +288,22 @@ class InscriptionFragment : Fragment() {
     /******************************Inscription plumber*/
     @SuppressLint("SetTextI18n")
     private fun createPlumberWithMail(m: String, p: String, n: String, tel: String) {
-        pAuth.createUserWithEmailAndPassword(m, p).addOnCompleteListener { it ->
+
+        pAuth.createUserWithEmailAndPassword(m, p).addOnCompleteListener {
             if (it.isSuccessful) {
-                val user = UsersModels(m, n, p, tel)
-                FirebaseDatabase.getInstance().getReference(userType)
-                    .child("User Info").setValue(user).addOnCompleteListener {
-                        if (it.isSuccessful) {
+                val plumber = PlumberModels(m, n, p, tel)
+                plumberDatabaseReference.child(Objects.requireNonNull<FirebaseUser?>(FirebaseAuth
+                    .getInstance().currentUser).uid).setValue(plumber).addOnSuccessListener {
+                    val connexionFragment = ConnexionFragment()
+                    fragmentManager?.beginTransaction()?.replace(R.id.nav_1, connexionFragment)?.commit()
+                    activity?.intent?.putExtra("e-mail", mail)
+                    activity?.intent?.putExtra("pass", passWrd)
 
-                            val connexionFragment = ConnexionFragment()
-                            fragmentManager?.beginTransaction()?.replace(R.id.nav_1, connexionFragment)?.commit()
-                            activity?.intent?.putExtra("e-mail", mail)
-                            activity?.intent?.putExtra("pass", passWrd)
-
-                            binding.imgViewSucces.visibility = View.VISIBLE
-                            binding.txtViewSucces.text = "Votre inscription a réussi !"
-                            Toast.makeText(activity, "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
-                            pAuth.currentUser
-                        }
-                        else {
-                            val failFragment = InscriptionFail()
-                            fragmentManager?.beginTransaction()?.replace(R.id.nav_1, failFragment)?.commit()
-                        }
-                    }
+                    binding.imgViewSucces.visibility = View.VISIBLE
+                    binding.txtViewSucces.text = "Votre inscription a réussi !"
+                    Toast.makeText(activity, "Votre inscription a réussi !", Toast.LENGTH_LONG).show()
+                    pAuth.currentUser
+                }
             }
             else {
                 val failFragment = InscriptionFail()
