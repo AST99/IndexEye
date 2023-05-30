@@ -67,6 +67,7 @@ class InscriptionFragment : Fragment() {
 
         binding.radioGroup.setOnCheckedChangeListener { _, _ ->
             if (binding.radiobtnSimpleUser.isChecked) {
+                userType = "Simple Users"
                 binding.btnNextAndSignIn.visibility = View.VISIBLE
                 binding.btnPrecedAndSignIn.visibility = View.VISIBLE
                 binding.btnPlumberInscription.visibility = View.GONE
