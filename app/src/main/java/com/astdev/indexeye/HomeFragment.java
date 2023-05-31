@@ -39,7 +39,6 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private DatabaseReference databaseReference;
-
     BarChart barChart;
 
     @Override
@@ -47,6 +46,7 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference("Simple Users")
                 .child(Objects.requireNonNull(user).getUid());
@@ -58,14 +58,24 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
+
         // Inflate the layout for this fragment
         return binding.getRoot();
     }
+
 
     @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //(requireActivity() as HomeScreen).supportActionBar!!.title = "User Profil"
+
+        //Objects.requireNonNull(((HomeScreen) requireActivity()).getSupportActionBar()).setTitle("IndexEye - Accueil");
+
+
+        ((HomeScreen) requireActivity()).setTitle("Accueil");
+                //setActionBarTitle("Accueil");
 
 
         List<String> spinnerItem = new ArrayList<>();
@@ -96,8 +106,13 @@ public class HomeFragment extends Fragment {
         });
 
 
+        binding.consoBar.setEnabled(false);
+        binding.consoBar.setProgress(80);
+
         getUserData();
+
     }
+
 
 
     private void getUserData(){
