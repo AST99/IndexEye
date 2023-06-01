@@ -37,6 +37,8 @@ class UserProfilFragment : Fragment() {
 
         (requireActivity() as HomeScreen).setActionBarTitle("IndexEye - User Profil")
 
+        getUserData()
+
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -47,7 +49,15 @@ class UserProfilFragment : Fragment() {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(snapshot: DataSnapshot) {
                 val userName = Objects.requireNonNull(snapshot.child("name").value).toString()
-                //binding..setText("Bonjour $userName")
+                val phone = Objects.requireNonNull(snapshot.child("phone").value).toString()
+                val mail = Objects.requireNonNull(snapshot.child("mail").value).toString()
+                val passWrd = Objects.requireNonNull(snapshot.child("passWrd").value).toString()
+                val deviceId = Objects.requireNonNull(snapshot.child("deviceId").value).toString()
+                binding.NameProfil.text = userName
+                binding.MailProfil.text = mail
+                binding.MobileProfil.text = phone
+                binding.passWrdProfil.text = passWrd
+                binding.DeviceId.text = deviceId
             }
 
             override fun onCancelled(error: DatabaseError) {}
