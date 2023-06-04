@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mainColor"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".HomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/entete_inv"
         android:orientation="vertical">
         <TextView
             android:id="@+id/txtWel"
@@ -59,7 +61,7 @@
                         android:layout_marginTop="10dp"
                         android:rotation="130"
                         app:cs_circle_color="#E5E5E5"
-                        app:cs_circle_progress_color="#5ccff9"
+                        app:cs_circle_progress_color="@color/secondColor"
                         app:cs_circle_stroke_width="10dp"
                         app:cs_circle_style="round"
                         app:cs_circle_x_radius="0dp"

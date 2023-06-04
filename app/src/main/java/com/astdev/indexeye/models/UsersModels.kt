@@ -10,7 +10,6 @@ class UsersModels {
 
     constructor()
 
-
     constructor(mail: String, name: String, passWrd: String, phone: String, deviceId: String) {
         this.mail = mail
         this.name = name

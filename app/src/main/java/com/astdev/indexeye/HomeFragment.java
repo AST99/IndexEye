@@ -1,6 +1,7 @@
 package com.astdev.indexeye;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,6 +124,7 @@ public class HomeFragment extends Fragment {
 
 
     /************************Les graphes hebdomadaire, mensuel, annuel******************************/
+    @SuppressLint("ResourceAsColor")
     public void graphHerbdo(){
 
         float[] yData = new float[]{28, 25, 30, 23, 31, 34, 10};
@@ -137,6 +139,7 @@ public class HomeFragment extends Fragment {
 
         Collections.addAll(xEntry.get(), jours);
         BarDataSet set1 = new BarDataSet(yEntry, "");
+        set1.setColor(Color.parseColor("#FF1497CF"));
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);

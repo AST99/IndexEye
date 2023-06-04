@@ -48,15 +48,15 @@ class UserProfilFragment : Fragment() {
         databaseReference.addValueEventListener(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(snapshot: DataSnapshot) {
-                val userName = Objects.requireNonNull(snapshot.child("name").value).toString()
-                val phone = Objects.requireNonNull(snapshot.child("phone").value).toString()
-                val mail = Objects.requireNonNull(snapshot.child("mail").value).toString()
-                val passWrd = Objects.requireNonNull(snapshot.child("passWrd").value).toString()
-                val deviceId = Objects.requireNonNull(snapshot.child("deviceId").value).toString()
+                val userName = snapshot.child("name").value.toString()
+                val phone = snapshot.child("phone").value.toString()
+                val mail = snapshot.child("mail").value.toString()
+                //val passWrd = snapshot.child("passWrd").value.toString()
+                val deviceId = snapshot.child("deviceId").value.toString()
                 binding.NameProfil.text = userName
                 binding.MailProfil.text = mail
                 binding.MobileProfil.text = phone
-                binding.passWrdProfil.text = passWrd
+                //binding.passWrdProfil.text = passWrd
                 binding.DeviceId.text = deviceId
             }
 

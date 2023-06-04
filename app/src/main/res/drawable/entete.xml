@@ -1,0 +1,10 @@
+<!-- Code for drawable -->
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/secondColor" />
+
+    <corners
+        android:bottomLeftRadius="70dp"
+        android:bottomRightRadius="70dp" />
+</shape>
