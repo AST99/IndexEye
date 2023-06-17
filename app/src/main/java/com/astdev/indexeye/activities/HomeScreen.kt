@@ -1,4 +1,4 @@
-package com.astdev.indexeye
+package com.astdev.indexeye.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI.setupWithNavController
+import com.astdev.indexeye.R
 import com.astdev.indexeye.databinding.HomeScreenBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -27,7 +28,7 @@ class HomeScreen : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        navController= Navigation.findNavController(this,R.id.activity_main_nav_host_fragment)
+        navController= Navigation.findNavController(this, R.id.activity_main_nav_host_fragment)
         setupWithNavController(binding.bottomNavigationView,navController)
 
     }

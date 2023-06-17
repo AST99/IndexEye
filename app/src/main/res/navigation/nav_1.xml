@@ -7,27 +7,22 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.astdev.indexeye.WelcomeFragment"
+        android:name="com.astdev.indexeye.fragments.WelcomeFragment"
         android:label="fragment_welcome"
         tools:layout="@layout/fragment_welcome" />
     <fragment
         android:id="@+id/inscriptionFragment"
-        android:name="com.astdev.indexeye.InscriptionFragment"
+        android:name="com.astdev.indexeye.fragments.InscriptionFragment"
         android:label="fragment_inscription"
         tools:layout="@layout/fragment_inscription" />
     <fragment
         android:id="@+id/connexionFragment"
-        android:name="com.astdev.indexeye.ConnexionFragment"
+        android:name="com.astdev.indexeye.fragments.ConnexionFragment"
         android:label="fragment_connexion"
         tools:layout="@layout/fragment_connexion" />
     <fragment
         android:id="@+id/inscriptionFail"
-        android:name="com.astdev.indexeye.InscriptionFail"
+        android:name="com.astdev.indexeye.fragments.InscriptionFail"
         android:label="fragment_inscription_fail"
         tools:layout="@layout/fragment_inscription_fail" />
-    <fragment
-        android:id="@+id/plumberInscriptionFragment"
-        android:name="com.astdev.indexeye.PlumberInscriptionFragment"
-        android:label="fragment_plumber_inscription"
-        tools:layout="@layout/fragment_plumber_inscription" />
 </navigation>

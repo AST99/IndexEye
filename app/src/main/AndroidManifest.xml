@@ -19,10 +19,10 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".HomeScreen"
+            android:name=".activities.HomeScreen"
             android:exported="false" />
         <activity
-            android:name=".FirstActivity"
+            android:name=".activities.FirstActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

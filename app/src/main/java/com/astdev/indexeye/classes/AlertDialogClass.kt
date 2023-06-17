@@ -1,11 +1,14 @@
-package com.astdev.indexeye
+package com.astdev.indexeye.classes
 
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.Gravity
 import android.view.LayoutInflater
+import android.widget.LinearLayout
+import com.astdev.indexeye.R
 
 class AlertDialogClass {
 
@@ -17,6 +20,16 @@ class AlertDialogClass {
             dialog.setContentView(inflate)
             dialog.setCancelable(false)
             dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.WHITE))
+            return dialog
+        }
+
+        fun editUserInfoDialog(context: Context?): Dialog{
+            val dialog = Dialog(context!!)
+            dialog.setContentView(R.layout.edit_user_info)
+            dialog.window!!.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            dialog.window!!.setGravity(Gravity.BOTTOM)
+            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.setCanceledOnTouchOutside(false)
             return dialog
         }
     }

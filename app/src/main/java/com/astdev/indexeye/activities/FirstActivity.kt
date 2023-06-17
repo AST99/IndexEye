@@ -1,7 +1,7 @@
-package com.astdev.indexeye
+package com.astdev.indexeye.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.astdev.indexeye.databinding.ActivityFirstBinding
 
 class FirstActivity : AppCompatActivity() {
@@ -10,6 +10,7 @@ class FirstActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityFirstBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
