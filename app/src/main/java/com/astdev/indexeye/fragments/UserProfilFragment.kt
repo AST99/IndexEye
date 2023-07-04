@@ -1,6 +1,7 @@
 package com.astdev.indexeye.fragments
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.astdev.indexeye.R
 import com.astdev.indexeye.activities.HomeScreen
@@ -27,7 +29,7 @@ class UserProfilFragment : Fragment() {
 
     private lateinit var databaseReference: DatabaseReference
 
-    private lateinit var userName: String
+    private lateinit var name: String
     private lateinit var phone: String
     private lateinit var mail: String
     private lateinit var deviceId: String
@@ -43,6 +45,7 @@ class UserProfilFragment : Fragment() {
         databaseReference = FirebaseDatabase.getInstance().getReference("Simple Users").child((user)!!.uid)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("InflateParams")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentUserProfilBinding.inflate(inflater, container, false)
@@ -74,6 +77,11 @@ class UserProfilFragment : Fragment() {
                 btnEditCancel.visibility = View.GONE
                 btnSave.visibility = View.VISIBLE
                 btnEdit.visibility = View.GONE
+
+                editTxtName.setText(name)
+                editMail.setText(mail)
+                editPhone.setText(phone)
+
             }
         }
 
@@ -83,8 +91,6 @@ class UserProfilFragment : Fragment() {
             btnEditCancel.visibility = View.VISIBLE
             btnSave.visibility = View.GONE
             btnEdit.visibility = View.VISIBLE
-
-
 
             val nameUpdated: String = editTxtName.text.toString().trim()
             val mailUpdated: String = editMail.text.toString().trim()
@@ -101,6 +107,7 @@ class UserProfilFragment : Fragment() {
 
         }
 
+
         binding.floatingActionButton.setOnClickListener {
             updateDialog.show()
         }
@@ -112,20 +119,20 @@ class UserProfilFragment : Fragment() {
         databaseReference.addValueEventListener(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(snapshot: DataSnapshot) {
-                userName = snapshot.child("name").value.toString()
+                name = snapshot.child("name").value.toString()
                 phone = snapshot.child("phone").value.toString()
                 mail = snapshot.child("mail").value.toString()
                 passWrd = snapshot.child("passWrd").value.toString()
                 deviceId = snapshot.child("deviceId").value.toString()
-                binding.NameProfil.text = userName
+
+                binding.NameProfil.text = name
                 binding.MailProfil.text = mail
                 binding.MobileProfil.text = phone
                 //binding.passWrdProfil.text = passWrd
                 binding.DeviceId.text = deviceId
+
             }
             override fun onCancelled(error: DatabaseError) {}
         })
     }
-
-
 }

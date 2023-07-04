@@ -17,7 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IndexEye"
         tools:targetApi="31">
-
+        <activity
+            android:name=".PlumberActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.HomeScreen"
             android:exported="false" />

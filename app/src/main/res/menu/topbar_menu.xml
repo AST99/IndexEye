@@ -5,10 +5,18 @@
     tools:ignore="MissingDefaultResource">
 
     <item
+        android:id="@+id/action_notif"
+        android:title="Notifications"
+        android:icon="@drawable/ic_notif"
+        app:showAsAction="ifRoom"
+        android:contentDescription="Notification"/>
+
+
+    <item
         android:id="@+id/action_deconnexion"
         android:title="Déconnexion"
+        app:showAsAction="always"
         android:icon="@drawable/ic_logout"
-        app:showAsAction="ifRoom"
         android:contentDescription="Me déconnecter"/>
 
 </menu>

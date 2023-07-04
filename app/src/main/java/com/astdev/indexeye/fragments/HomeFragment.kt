@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import com.astdev.indexeye.R
 import com.astdev.indexeye.activities.HomeScreen
 import com.astdev.indexeye.classes.GraphClass.Companion.graphAnnuel
-import com.astdev.indexeye.classes.GraphClass.Companion.graphHerbdo
+import com.astdev.indexeye.classes.GraphClass.Companion.graphHebdo
 import com.astdev.indexeye.classes.GraphClass.Companion.graphMensuel
 import com.astdev.indexeye.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -46,19 +46,18 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val spinnerItem: MutableList<String> = ArrayList()
-        spinnerItem.add("Résumé herbdomadaire")
+        spinnerItem.add("Résumé hebdomadaire")
         spinnerItem.add("Résumé mensuel")
         spinnerItem.add("Résumé annuel")
         val spinner = view.findViewById<Spinner>(R.id.spinner)
-        val adapter =
-            ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerItem)
+        val adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerItem)
         spinner.adapter = adapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                 when (i) {
-                    0 -> graphHerbdo(binding!!.barChart)
-                    1 -> graphMensuel(binding!!.barChart)
-                    2 -> graphAnnuel(binding!!.barChart)
+                    0 -> binding?.let { graphHebdo(it.barChart) }
+                    1 -> binding?.let { graphMensuel(it.barChart) }
+                    2 -> binding?.let { graphAnnuel(it.barChart) }
                     else -> throw IllegalStateException("Unexpected value: $i")
                 }
             }

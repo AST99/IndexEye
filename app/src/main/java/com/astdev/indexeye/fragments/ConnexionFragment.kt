@@ -1,5 +1,6 @@
 package com.astdev.indexeye.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,30 +12,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.astdev.indexeye.PlumberActivity
 import com.astdev.indexeye.R
 import com.astdev.indexeye.activities.HomeScreen
 import com.astdev.indexeye.classes.AlertDialogClass
 import com.astdev.indexeye.databinding.FragmentConnexionBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.io.*
 import java.util.Objects
+
 
 class ConnexionFragment : Fragment() {
 
     private lateinit var binding: FragmentConnexionBinding
     private lateinit var auth: FirebaseAuth
     private var thisContext: Context? = null
-    private lateinit var mAuth: FirebaseAuth
+
+    private lateinit var type: String
+
+    private lateinit var databaseReference: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         auth = FirebaseAuth.getInstance()
-
         binding = FragmentConnexionBinding.inflate(layoutInflater)
-
-        mAuth = FirebaseAuth.getInstance()
-        if (mAuth.currentUser != null)
-            startActivity(Intent(requireActivity(), HomeScreen::class.java))
 
         mailAndPassWrdFocusListener()
 
@@ -84,10 +91,10 @@ class ConnexionFragment : Fragment() {
                 auth.signInWithEmailAndPassword(mail, passWrd).addOnCompleteListener {
 
                     if (it.isSuccessful) {
-                        startActivity(Intent(activity, HomeScreen::class.java))
-                        dialog.dismiss()
+                        getUserData()
                         binding.Mail.text!!.clear()
                         binding.passWrd.text!!.clear()
+                        dialog.dismiss()
                     } else {
                         Toast.makeText(thisContext, "Adresse mail ou " +
                                 "mot de passe incorrect", Toast.LENGTH_SHORT).show()
@@ -103,8 +110,7 @@ class ConnexionFragment : Fragment() {
         if (TextUtils.isEmpty(binding.Mail.text))
             return "Votre e-mail est requis!"
         else if (!Patterns.EMAIL_ADDRESS.matcher(
-                Objects.requireNonNull<Editable>(binding.Mail.text)
-                    .toString().trim { it <= ' ' }).matches()) {
+                Objects.requireNonNull<Editable>(binding.Mail.text).toString().trim { it <= ' ' }).matches()) {
             return "Veillez fournir un e-mail valide!"
         }
         return null
@@ -127,4 +133,28 @@ class ConnexionFragment : Fragment() {
         }
     }
 
+
+    private fun getUserData() {
+
+        val dialog = AlertDialogClass.progressDialog(thisContext)
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("Simple Users").child((FirebaseAuth
+            .getInstance().currentUser)!!.uid)
+
+
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            @SuppressLint("SetTextI18n")
+            override fun onDataChange(snapshot: DataSnapshot) {
+                type = snapshot.child("type").value.toString()
+                if (type == "particular"){
+                    startActivity(Intent(activity, HomeScreen::class.java))
+                }
+                else{
+                    startActivity(Intent(activity, PlumberActivity::class.java))
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
+        dialog.dismiss()
+    }
 }

@@ -5,10 +5,12 @@ class PlumberModels {
     lateinit var name: String
     lateinit var passWrd: String
     lateinit var phone: String
+    var type: String = "plumber"
 
     constructor()
 
     constructor(mail: String, name: String, passWrd: String, phone: String){
+        type
         this.mail = mail
         this.name = name
         this.passWrd = passWrd

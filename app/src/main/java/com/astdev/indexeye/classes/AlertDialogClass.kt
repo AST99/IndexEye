@@ -25,9 +25,19 @@ class AlertDialogClass {
 
         fun editUserInfoDialog(context: Context?): Dialog{
             val dialog = Dialog(context!!)
-            dialog.setContentView(R.layout.edit_user_info)
+            dialog.setContentView(R.layout.edit_dialog)
             dialog.window!!.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             dialog.window!!.setGravity(Gravity.BOTTOM)
+            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.setCanceledOnTouchOutside(false)
+            return dialog
+        }
+
+        fun logOutDialog(context: Context?):Dialog{
+            val dialog = Dialog(context!!)
+            dialog.setContentView(R.layout.log_out_dialog)
+            dialog.window!!.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            dialog.window!!.setGravity(Gravity.CENTER)
             dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.setCanceledOnTouchOutside(false)
             return dialog

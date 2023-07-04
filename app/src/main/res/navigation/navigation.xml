@@ -20,4 +20,9 @@
         android:name="com.astdev.indexeye.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/plumberProfil"
+        android:name="com.astdev.indexeye.PlumberProfil"
+        android:label="fragment_plumber_profil"
+        tools:layout="@layout/fragment_plumber_profil" />
 </navigation>

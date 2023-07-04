@@ -17,7 +17,7 @@ class GraphClass {
     companion object{
 
         @SuppressLint("ResourceAsColor")
-        fun graphHerbdo(barChart: BarChart) {
+        fun graphHebdo(barChart: BarChart) {
             val yData = floatArrayOf(28f, 25f, 30f, 23f, 31f, 34f, 10f)
             val jours = arrayOf("Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim")
             val xEntry = AtomicReference(ArrayList<String>())
@@ -58,7 +58,8 @@ class GraphClass {
             )
             val xEntry = AtomicReference(ArrayList<String>())
             val yEntry = ArrayList<BarEntry>()
-            for (i in yData.indices) yEntry.add(BarEntry(i.toFloat(), yData[i]))
+            for (i in yData.indices)
+                yEntry.add(BarEntry(i.toFloat(), yData[i]))
             Collections.addAll(xEntry.get(), *mois)
             val set1 = BarDataSet(yEntry, "")
             set1.color = Color.parseColor("#FF1497CF")
