@@ -24,7 +24,7 @@ import com.google.firebase.database.ValueEventListener
 import java.util.Objects
 
 class HomeFragment : Fragment() {
-    private var binding: FragmentHomeBinding? = null
+    private lateinit var binding: FragmentHomeBinding
     private var databaseReference: DatabaseReference? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class HomeFragment : Fragment() {
         (requireActivity() as HomeScreen).setActionBarTitle("Accueil")
 
         // Inflate the layout for this fragment
-        return binding!!.root
+        return binding.root
     }
 
     @SuppressLint("NonConstantResourceId", "SetTextI18n")
@@ -55,9 +55,9 @@ class HomeFragment : Fragment() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                 when (i) {
-                    0 -> binding?.let { graphHebdo(it.barChart) }
-                    1 -> binding?.let { graphMensuel(it.barChart) }
-                    2 -> binding?.let { graphAnnuel(it.barChart) }
+                    0 -> graphHebdo(binding.barChart)
+                    1 -> graphMensuel(binding.barChart)
+                    2 -> graphAnnuel(binding.barChart)
                     else -> throw IllegalStateException("Unexpected value: $i")
                 }
             }
@@ -71,7 +71,7 @@ class HomeFragment : Fragment() {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(snapshot: DataSnapshot) {
                 val userName = Objects.requireNonNull(snapshot.child("name").value).toString()
-                    binding!!.txtWel.text = "Bonjour $userName"
+                    binding.txtWel.text = "Bonjour $userName"
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })

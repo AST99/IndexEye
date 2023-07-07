@@ -293,7 +293,7 @@ class InscriptionFragment : Fragment() {
 
         pAuth.createUserWithEmailAndPassword(m, p).addOnCompleteListener {
             if (it.isSuccessful) {
-                val plumber = UsersModels(m, n, p, tel)
+                val plumber = PlumberModels(m, n, p, tel)
                 plumberDatabaseReference.child(Objects.requireNonNull<FirebaseUser?>(FirebaseAuth
                     .getInstance().currentUser).uid).setValue(plumber).addOnSuccessListener {
                     val connexionFragment = ConnexionFragment()

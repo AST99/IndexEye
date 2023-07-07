@@ -11,6 +11,7 @@
     <color name="mainColor">#FF1497CF</color>
     <color name="secondColor">#FF1497CF</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="underline">#D8D6D6</color>
 
 
 </resources>

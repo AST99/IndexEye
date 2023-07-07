@@ -1,7 +1,7 @@
 package com.astdev.indexeye.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -12,9 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.astdev.indexeye.PlumberActivity
 import com.astdev.indexeye.R
 import com.astdev.indexeye.activities.HomeScreen
+import com.astdev.indexeye.activities.PlumberProfile
 import com.astdev.indexeye.classes.AlertDialogClass
 import com.astdev.indexeye.databinding.FragmentConnexionBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -31,11 +31,13 @@ class ConnexionFragment : Fragment() {
 
     private lateinit var binding: FragmentConnexionBinding
     private lateinit var auth: FirebaseAuth
-    private var thisContext: Context? = null
 
     private lateinit var type: String
 
     private lateinit var databaseReference: DatabaseReference
+
+    //private lateinit var mAuth: FirebaseAuth
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,7 @@ class ConnexionFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         binding = FragmentConnexionBinding.inflate(layoutInflater)
 
+        //mAuth = FirebaseAuth.getInstance()
         mailAndPassWrdFocusListener()
 
     }
@@ -51,8 +54,6 @@ class ConnexionFragment : Fragment() {
         // Inflate the layout for this fragment
 
         binding = FragmentConnexionBinding.inflate(inflater, container, false)
-
-        thisContext = container!!.context
 
         val inscriptionMail: String? = activity?.intent?.getStringExtra("e-mail")
         val inscriptionPassWrd: String?= activity?.intent?.getStringExtra("pass")
@@ -77,7 +78,7 @@ class ConnexionFragment : Fragment() {
 
         val mail: String = binding.Mail.text.toString().trim()
         val passWrd: String = binding.passWrd.text.toString().trim()
-        val dialog = AlertDialogClass.progressDialog(thisContext)
+        val dialog = AlertDialogClass.progressDialog(requireActivity())
 
         if ( /*valideMail()!=null || */TextUtils.isEmpty(binding.Mail.text))
             binding.mailContainer.error = "Votre e-mail est requis!"
@@ -96,13 +97,13 @@ class ConnexionFragment : Fragment() {
                         binding.passWrd.text!!.clear()
                         dialog.dismiss()
                     } else {
-                        Toast.makeText(thisContext, "Adresse mail ou " +
+                        Toast.makeText(requireActivity(), "Adresse mail ou " +
                                 "mot de passe incorrect", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     }
                 }
             } else
-                Toast.makeText(thisContext, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -136,7 +137,7 @@ class ConnexionFragment : Fragment() {
 
     private fun getUserData() {
 
-        val dialog = AlertDialogClass.progressDialog(thisContext)
+        val dialog = AlertDialogClass.progressDialog(requireActivity())
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Simple Users").child((FirebaseAuth
             .getInstance().currentUser)!!.uid)
@@ -147,14 +148,41 @@ class ConnexionFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 type = snapshot.child("type").value.toString()
                 if (type == "particular"){
+                    writeOnFile(type)
                     startActivity(Intent(activity, HomeScreen::class.java))
                 }
                 else{
-                    startActivity(Intent(activity, PlumberActivity::class.java))
+                    writeOnFile("plumber")
+                    startActivity(Intent(activity, PlumberProfile::class.java))
                 }
             }
             override fun onCancelled(error: DatabaseError) {}
         })
         dialog.dismiss()
+    }
+
+
+    private fun writeOnFile(txt:String) {
+        //File path: /data/data/com.astdev.indexeye/files/usrType.txt
+        val fileName = "usrType.txt"
+        context?.openFileOutput(fileName, MODE_PRIVATE).use { output ->
+            output!!.write(txt.toByteArray())
+        }
+
+        /*var fos: FileOutputStream? = null
+        try {
+            fos = context.openFileOutput("position", MODE_PRIVATE)
+            fos.write(java.lang.String.valueOf(position).toByteArray())
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }*/
     }
 }

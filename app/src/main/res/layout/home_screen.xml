@@ -17,10 +17,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleMarginStart="30dp"
         app:title="Accueil"
+        app:titleMarginStart="30dp"
         app:titleTextColor="@android:color/white" />
-
 
     <fragment
         android:id="@+id/activity_main_nav_host_fragment"

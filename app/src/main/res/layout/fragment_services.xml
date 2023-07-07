@@ -8,17 +8,19 @@
     tools:context=".fragments.ServicesFragment">
 
     <LinearLayout
+        android:id="@+id/presentService"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="30dp"
             android:layout_marginEnd="15dp"
+            android:layout_marginBottom="30dp"
             app:cardElevation="4dp">
 
             <LinearLayout
@@ -39,13 +41,12 @@
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Votre robinet coule et vous avez besoin d'un plombier?"
-                android:textColor="@color/white"
-                android:textStyle="bold|italic"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="15dp"
+                android:text="Votre robinet coule et vous avez besoin d'un plombier?"
+                android:textColor="@color/white"
                 android:textSize="23sp"
-                />
+                android:textStyle="bold|italic" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -74,18 +75,18 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="190dp"
-                        android:contentDescription="Service de plomberie"
+                        android:contentDescription="Signaler une fuite"
                         android:scaleType="centerCrop"
                         android:src="@drawable/img_fuite" />
 
                     <Button
-                        android:id="@+id/btnConterPlombier"
+                        android:id="@+id/btnSignalerFuite"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_margin="10dp"
                         android:backgroundTint="@color/mainColor"
                         android:text="Signaler une fuite"
-                        android:layout_margin="10dp"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         tools:ignore="TextContrastCheck" />
@@ -108,19 +109,19 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="190dp"
-                        android:contentDescription="Service vidange"
+                        android:contentDescription="Contacter un plombier"
                         android:scaleType="centerCrop"
                         android:src="@drawable/service_plumber" />
 
                     <Button
-                        android:id="@+id/btnConterVidangeur"
+                        android:id="@+id/btnContacterPlombier"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_margin="10dp"
                         android:backgroundTint="@color/mainColor"
                         android:text="Contacter un plombier"
                         android:textAllCaps="false"
-                        android:layout_margin="10dp"
                         android:textColor="@color/white"
                         tools:ignore="TextContrastCheck" />
 
@@ -129,5 +130,34 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/plumberContactList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="60dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                tools:listitem="@layout/list_plumber_item" />
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
