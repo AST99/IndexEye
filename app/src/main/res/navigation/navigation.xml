@@ -10,9 +10,7 @@
         android:name="com.astdev.indexeye.fragments.ServicesFragment"
         android:label="fragment_services"
         tools:layout="@layout/fragment_services" >
-        <action
-            android:id="@+id/action_servicesFragment_to_listPlumberFragment"
-            app:destination="@id/listPlumberFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/userProfilFragment"
@@ -24,10 +22,5 @@
         android:name="com.astdev.indexeye.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
-    <fragment
-        android:id="@+id/listPlumberFragment"
-        android:name="com.astdev.indexeye.ListPlumberFragment"
-        android:label="fragment_list_plumber"
-        tools:layout="@layout/fragment_list_plumber" />
 
 </navigation>

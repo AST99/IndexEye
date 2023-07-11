@@ -1,21 +1,20 @@
 package com.astdev.indexeye.fragments
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.astdev.indexeye.R
 import com.astdev.indexeye.activities.HomeScreen
 import com.astdev.indexeye.adapters.PlumberListAdapter
 import com.astdev.indexeye.databinding.FragmentServicesBinding
 import com.astdev.indexeye.models.PlumberModels
-import com.astdev.indexeye.models.UsersModels
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -25,10 +24,6 @@ import com.google.firebase.database.ValueEventListener
 class ServicesFragment : Fragment(){
 
     private lateinit var binding: FragmentServicesBinding
-    private lateinit var plumberList: ArrayList<UsersModels>
-
-    private val database = FirebaseDatabase.getInstance()
-    val myRef = FirebaseDatabase.getInstance().getReference("Simple Users")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +39,18 @@ class ServicesFragment : Fragment(){
 
         (requireActivity() as HomeScreen).setActionBarTitle("Services")
 
+
+        requireActivity().onBackPressedDispatcher
+            .addCallback(requireActivity(), object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Log.d(TAG, "Fragment back pressed invoked")
+                    // Do custom work here
+                    binding.presentService.visibility = View.VISIBLE
+                    binding.plumberContactList.visibility = View.GONE
+                }
+            })
+
+
         // Inflate the layout for this fragment
         return binding.root
 
@@ -52,10 +59,6 @@ class ServicesFragment : Fragment(){
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
-
 
         binding.btnContacterPlombier.setOnClickListener {
             (requireActivity() as HomeScreen).setActionBarTitle("Trouver un plombier")
@@ -73,7 +76,6 @@ class ServicesFragment : Fragment(){
         binding.btnSignalerFuite.setOnClickListener {
             //showPlumberList()
         }
-
     }
 
 
@@ -106,8 +108,4 @@ class ServicesFragment : Fragment(){
             }
         })
     }
-
-
-
-
 }
